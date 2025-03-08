@@ -106,3 +106,5 @@ def get_platform_url() -> str:
 
     driver.quit()
     return result_url
+
+print(get_platform_url())
