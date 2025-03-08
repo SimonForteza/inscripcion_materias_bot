@@ -1,27 +1,70 @@
 @echo off
-REM Verifica si Python está instalado
+
+:: Verifica si Python está instalado
 where python >nul 2>nul
-IF %ERRORLEVEL% NEQ 0 (
+if errorlevel 1 (
     echo Python no está instalado. Por favor instálalo antes de continuar.
-    exit /b
+    exit /b 1
 )
 
-REM Crea el entorno virtual si no existe
-IF NOT EXIST "venv" (
+:: Crea el entorno virtual si no existe
+if not exist "venv" (
     python -m venv venv
     echo Entorno virtual creado exitosamente.
 )
 
-REM Activa el entorno virtual
-call .\venv\Scripts\activate
+:: Activa el entorno virtual
+call venv\Scripts\activate.bat
 
-REM Instala las dependencias
-IF EXIST "requirements.txt" (
+:: Instala las dependencias
+if exist "requirements.txt" (
     pip install -r requirements.txt
     echo Dependencias instaladas correctamente.
-) ELSE (
+) else (
     echo El archivo requirements.txt no se encontró.
-    exit /b
+    exit /b 1
 )
 
-echo Configuración completada. Usa "venv\Scripts\activate" para activar el entorno.
+:: Solicita el email dos veces y verifica que coincidan
+:email_loop
+set /p email1=Ingrese su correo electrónico: 
+set /p email2=Confirme su correo electrónico: 
+
+:: Verificación de formato básico de email
+echo %email1% | findstr /r "^[a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$" >nul
+if errorlevel 1 (
+    echo Correo electrónico no válido. Inténtelo nuevamente.
+    goto email_loop
+)
+
+if "%email1%"=="%email2%" (
+    echo Correo electrónico verificado correctamente.
+) else (
+    echo Los correos electrónicos no coinciden. Inténtelo de nuevo.
+    goto email_loop
+)
+
+:: Solicita la contraseña dos veces y verifica que coincidan
+:password_loop
+set /p password1=Ingrese su contraseña: 
+set /p password2=Confirme su contraseña: 
+
+if "%password1%"=="%password2%" (
+    echo Contraseña verificada correctamente.
+) else (
+    echo Las contraseñas no coinciden. Inténtelo de nuevo.
+    goto password_loop
+)
+
+:: Guarda el email y la contraseña en el archivo .env
+echo EMAIL=%email1% > .env
+echo PASSWORD=%password1% >> .env
+
+:: Ejecuta el script para obtener la URL
+set PYTHONPATH=%cd%\src python src\main.py
+
+:: Crear el archivo de control
+type nul > .config_done
+echo Configuración completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
+
+echo Configuración completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
