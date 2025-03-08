@@ -28,10 +28,6 @@ def main():
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service)
-        options = Options()
-        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-        driver = webdriver.Chrome(options=options)
-        #se accede a la pagina
         driver.get(url)
 
     except Exception as e:

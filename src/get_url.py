@@ -34,16 +34,13 @@ def get_platform_url() -> str:
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service)
-        options = Options()
-        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-        driver = webdriver.Chrome(options=options)
         #se accede a la pagina
         driver.get(url)
 
     except Exception as e:
         print(f"Error while getting the URL: {e}")
 
-    time.sleep(1)
+    time.sleep(2)
     boton_login = WebDriverWait(driver, 10).until(
          EC.presence_of_element_located((By.XPATH, '//*[@id="main"]/div/a'))
     )
@@ -59,34 +56,34 @@ def get_platform_url() -> str:
     type_text(signIn_field, username)
     signIn_field.send_keys(Keys.ENTER)
 
-    time.sleep(1)
+    time.sleep(2)
     #complete the password
     password_field = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "i0118"))
     )
     type_text(password_field, password)
-    time.sleep(1)
+    time.sleep(2)
     password_field.send_keys(Keys.ENTER)
 
-    time.sleep(1)
+    time.sleep(2)
     boton_no = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="idBtn_Back"]'))
     )
     boton_no.click()
 
-    time.sleep(1)
+    time.sleep(2)
     boton_menu = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="main"]/ul/li[2]/a'))
     )
     boton_menu.click()
 
-    time.sleep(1)
+    time.sleep(2)
     boton_inscribite = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="inscripcionesWrapper"]/div[3]/div[1]/div/a'))
     )
     driver.execute_script("arguments[0].click();", boton_inscribite)
 
-    time.sleep(1)
+    time.sleep(2)
     boton_continuar = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/button'))
     )
