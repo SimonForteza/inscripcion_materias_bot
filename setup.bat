@@ -1,15 +1,26 @@
 @echo off
 
+:: Verifica si el archivo .config_done existe
+if exist .config_done (
+    echo La configuración ya ha sido completada previamente.
+    echo Presione cualquier tecla para salir...
+    pause >nul
+    exit /b 0
+)
+
+echo Iniciando la instalacion...
+
 :: Verifica si Python está instalado
 where python >nul 2>nul
 if errorlevel 1 (
-    echo Python no está instalado. Por favor instálalo antes de continuar.
+    echo Python no está instalado. Por favor instalalo antes de continuar.
     exit /b 1
 )
 
 :: Crea el entorno virtual si no existe
 if not exist "venv" (
     python -m venv venv
+    python.exe -m pip install --upgrade pip
     echo Entorno virtual creado exitosamente.
 )
 
@@ -27,18 +38,18 @@ if exist "requirements.txt" (
 
 :: Solicita el email dos veces y verifica que coincidan
 :email_loop
-set /p email1=Ingrese su correo electrónico: 
-set /p email2=Confirme su correo electrónico: 
+set /p email1=Ingrese su correo electronico: 
+set /p email2=Confirme su correo electronico: 
 
-:: Verificación de formato básico de email
-echo %email1% | findstr /r "^[a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$" >nul
+:: Verificación simple de email (contiene @ y .)
+echo %email1% | findstr "@." >nul
 if errorlevel 1 (
-    echo Correo electrónico no válido. Inténtelo nuevamente.
+    echo Correo electrónico no valido. Intentelo nuevamente.
     goto email_loop
 )
 
 if "%email1%"=="%email2%" (
-    echo Correo electrónico verificado correctamente.
+    echo Correo electronico verificado correctamente.
 ) else (
     echo Los correos electrónicos no coinciden. Inténtelo de nuevo.
     goto email_loop
@@ -57,14 +68,15 @@ if "%password1%"=="%password2%" (
 )
 
 :: Guarda el email y la contraseña en el archivo .env
-echo EMAIL=%email1% > .env
+echo MY_USERNAME=%email1% > .env
 echo PASSWORD=%password1% >> .env
 
 :: Ejecuta el script para obtener la URL
-set PYTHONPATH=%cd%\src python src\main.py
+set PYTHONPATH=%cd%\src 
+python src\get_url.py
 
 :: Crear el archivo de control
 type nul > .config_done
-echo Configuración completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
+echo Configuracion completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
 
-echo Configuración completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
+echo Configuracion completada. Usa 'call venv\Scripts\activate.bat' para activar el entorno.
