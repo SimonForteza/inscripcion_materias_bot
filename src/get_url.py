@@ -11,6 +11,7 @@ import pyperclip
 
 import time
 import random
+import os
 
 from get_user_information import get_user_info
 
@@ -99,9 +100,22 @@ def get_platform_url() -> str:
 
     # Obtiene la URL después de la redirección
     result_url = pyperclip.paste()
-    print(result_url)
-
     driver.quit()
-    return result_url
+    
+    # Obtener la ruta al archivo .env
+    repo_root = os.path.dirname(os.path.abspath(__file__))  # Directorio del script actual
+    project_folder = os.path.abspath(os.path.join(repo_root, '..'))  # Carpeta del proyecto (un nivel arriba)
+    env_crud_path = os.path.join(project_folder, '.env')  # Ruta al archivo .env en la carpeta del proyecto
 
-print(get_platform_url())
+    env_file_path = r"%s" % env_crud_path
+    print(f"Ruta al archivo .env: {env_file_path}")
+    # Escribir en el archivo .env
+    try:
+        with open(env_file_path, 'a') as env_file:
+            env_file.write(f"URL={result_url}\n")
+    except Exception as e:
+        print(f"Error writing to .env: {e}")
+        
+
+if __name__ == "__main__":
+    get_platform_url()
